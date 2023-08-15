@@ -1,6 +1,6 @@
 name: 'Firefox Addon Publish'
 description: 'Github action to upload firefox addon.'
-author: 'yayuyokitano'
+author: 'zerocity'
 inputs:
   guid:
     required: true
@@ -17,5 +17,5 @@ inputs:
   src_path:
     description: 'path to src zip file for verification. To be used if your extension uses minification, or other build steps that make it difficult to read the code of the xpi.'
 runs:
-  using: 'node16'
+  using: 'node18'
   main: 'dist/index.js'

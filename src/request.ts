@@ -3,7 +3,7 @@ import FormData from 'form-data'
 import {baseURL} from './util'
 import {resolve} from 'path'
 import {createReadStream} from 'fs'
-import axios from 'axios'
+import axios, {isAxiosError} from 'axios'
 import {InitialUploadDetails, UploadDetails} from './types.d'
 
 export async function createUpload(
@@ -54,11 +54,15 @@ export async function tryUpdateExtension(
         Authorization: `JWT ${token}`
       }
     })
-    core.debug(`Create version response: ${ JSON.stringify(response.data) }`)
+    core.debug(`Create version response: ${JSON.stringify(response.data)}`)
     return true
-  } catch(error) {
-    if (axios.isAxiosError(error)) {
-      core.error(`Error occurred when uploading extension: ${ JSON.stringify(error?.response?.data) }`)
+  } catch (error) {
+    if (isAxiosError(error)) {
+      core.error(
+        `Error occurred when uploading extension: ${JSON.stringify(
+          error?.response?.data
+        )}`
+      )
     }
     throw error
   }
