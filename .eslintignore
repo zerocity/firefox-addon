@@ -1,4 +1,7 @@
 dist/
 lib/
+
+__tests__
+
 node_modules/
 jest.config.js
