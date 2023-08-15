@@ -8,6 +8,7 @@ async function run(): Promise<void> {
     const xpiPath = core.getInput('xpi_path', {required: true})
     const key = core.getInput('api_key', {required: true})
     const secret = core.getInput('api_secret', {required: true})
+    const license = core.getInput('license', {required: true})
     const srcPath = core.getInput('src_path')
 
     const token = generateJWT(key, secret)
@@ -21,7 +22,15 @@ async function run(): Promise<void> {
       if (Date.now() - timeout > startTime) {
         throw new Error('Extension validation timed out')
       }
-      if (await tryUpdateExtension(guid, uploadDetails.uuid, token, srcPath)) {
+      if (
+        await tryUpdateExtension({
+          guid,
+          uuid: uploadDetails.uuid,
+          token,
+          license,
+          srcPath
+        })
+      ) {
         clearInterval(interval)
       }
     }, sleepTime)

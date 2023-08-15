@@ -27,12 +27,21 @@ export async function createUpload(
   return response.data
 }
 
-export async function tryUpdateExtension(
-  guid: string,
-  uuid: string,
-  token: string,
+interface UpdateExtensionParameters {
+  guid: string
+  uuid: string
+  token: string
+  license: string
   srcPath?: string
-): Promise<boolean> {
+}
+
+export async function tryUpdateExtension({
+  guid,
+  uuid,
+  token,
+  license,
+  srcPath
+}: UpdateExtensionParameters): Promise<boolean> {
   const details = await getUploadDetails(uuid, token)
   if (!details.valid) {
     return false
@@ -40,7 +49,10 @@ export async function tryUpdateExtension(
 
   const url = `${baseURL}/addons/addon/${guid}/versions/`
   const body = new FormData()
+
+  body.append('license', license)
   body.append('upload', uuid)
+
   if (srcPath) {
     core.debug(`Uploading ${srcPath}`)
     body.append('source', createReadStream(resolve(srcPath)))

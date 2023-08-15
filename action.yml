@@ -16,6 +16,20 @@ inputs:
     description: 'API secret for AMO'
   src_path:
     description: 'path to src zip file for verification. To be used if your extension uses minification, or other build steps that make it difficult to read the code of the xpi.'
+  license:
+    description: 'The slug of a non-custom license. The license must match the add-on type. Either provide license or custom_license, not both. If neither are provided, and there was a license defined for the previous version, it will inherit the previous version’s license.'
+    type: choice
+    required: true
+    options: 
+    - all-rights-reserved
+    - MPL-2.0
+    - GPL-2.0-or-later
+    - GPL-3.0-or-later
+    - LGPL-2.1-or-later
+    - LGPL-3.0-or-later
+    - MIT
+    - BSD-2-Clause
+
 runs:
   using: 'node16'
   main: 'dist/index.js'

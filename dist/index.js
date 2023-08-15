@@ -49,6 +49,7 @@ function run() {
             const xpiPath = core.getInput('xpi_path', { required: true });
             const key = core.getInput('api_key', { required: true });
             const secret = core.getInput('api_secret', { required: true });
+            const license = core.getInput('license', { required: true });
             const srcPath = core.getInput('src_path');
             const token = (0, util_1.generateJWT)(key, secret);
             const uploadDetails = yield (0, request_1.createUpload)(xpiPath, token);
@@ -59,7 +60,13 @@ function run() {
                 if (Date.now() - timeout > startTime) {
                     throw new Error('Extension validation timed out');
                 }
-                if (yield (0, request_1.tryUpdateExtension)(guid, uploadDetails.uuid, token, srcPath)) {
+                if (yield (0, request_1.tryUpdateExtension)({
+                    guid,
+                    uuid: uploadDetails.uuid,
+                    token,
+                    license,
+                    srcPath
+                })) {
                     clearInterval(interval);
                 }
             }), sleepTime);
@@ -155,7 +162,7 @@ function createUpload(xpiPath, token) {
     });
 }
 exports.createUpload = createUpload;
-function tryUpdateExtension(guid, uuid, token, srcPath) {
+function tryUpdateExtension({ guid, uuid, token, license, srcPath }) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const details = yield getUploadDetails(uuid, token);
@@ -164,6 +171,7 @@ function tryUpdateExtension(guid, uuid, token, srcPath) {
         }
         const url = `${util_1.baseURL}/addons/addon/${guid}/versions/`;
         const body = new form_data_1.default();
+        body.append('license', license);
         body.append('upload', uuid);
         if (srcPath) {
             core.debug(`Uploading ${srcPath}`);
